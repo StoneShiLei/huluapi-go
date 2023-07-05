@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
+	"time"
 )
 
 func main() {
@@ -14,7 +15,7 @@ func main() {
 	}
 
 	for {
-
+		time.Sleep(1000)
 	}
 }
 
