@@ -16,6 +16,7 @@ spec:
       labels:
         app: wake-on-lan-go
     spec:
+      hostNetwork: true
       containers:
         - name: wake-on-lan-go
           image: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:{{.image_tag}}
@@ -23,4 +24,3 @@ spec:
             - containerPort: 80
               protocol: TCP
           imagePullPolicy: IfNotPresent
-          hostNetwork: true
