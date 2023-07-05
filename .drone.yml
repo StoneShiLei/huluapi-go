@@ -3,7 +3,6 @@ type: docker
 name: wake-on-lan-go
 
 
-
 steps:
 - name: docker-build
   image: plugins/docker
