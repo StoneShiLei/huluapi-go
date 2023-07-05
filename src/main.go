@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	err := SendMagicPacket("04:7C:16:75:80:20", "255.255.255.255:9")
+	err := SendMagicPacket("04:7C:16:75:80:20", "255.255.255.0:9090")
 	if err != nil {
 		fmt.Println("Failed to send magic packet:", err)
 	}
