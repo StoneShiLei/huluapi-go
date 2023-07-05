@@ -20,7 +20,7 @@ spec:
       containers:
         - name: wake-on-lan-go
           image: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:{{.image_tag}}
-          ports:
-            - containerPort: 80
-              protocol: TCP
+          # ports:
+          #   - containerPort: 80
+          #     protocol: TCP
           imagePullPolicy: IfNotPresent
