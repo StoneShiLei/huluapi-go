@@ -1,0 +1,39 @@
+kind: pipeline
+type: docker
+name: wake-on-lan-go
+
+
+
+steps:
+- name: docker-build
+  image: plugins/docker
+  settings:
+    mirror: https://jnyis2wm.mirror.aliyuncs.com
+    repo: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go
+    registry: repo.internal.hafuhafu.cn
+    target: build
+    cache_from: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:build
+    tags:
+      - build
+
+
+- name: docker-final
+  image: plugins/docker
+  settings:
+    mirror: https://jnyis2wm.mirror.aliyuncs.com
+    repo: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go
+    registry: repo.internal.hafuhafu.cn
+    cache_from: 
+      - repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:build
+      - repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:latest
+    tags:
+      - latest
+      - ${DRONE_COMMIT}
+
+- name: dron8s-api
+  image: bh90210/dron8s:latest
+  settings:
+    yaml: ./deploy.yaml
+    image_tag: ${DRONE_COMMIT}
+    kubeconfig:
+        from_secret: kubeconfig

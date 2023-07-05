@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wake-on-lan-go
+  namespace: default
+  labels:
+    app: wake-on-lan-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wake-on-lan-go
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: wake-on-lan-go
+    spec:
+      containers:
+        - name: wake-on-lan-go
+          image: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:{{.image_tag}}
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
