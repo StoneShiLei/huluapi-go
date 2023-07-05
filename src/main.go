@@ -12,6 +12,10 @@ func main() {
 	if err != nil {
 		fmt.Println("Failed to send magic packet:", err)
 	}
+
+	for {
+
+	}
 }
 
 func SendMagicPacket(macAddr string, bcastAddr string) error {
