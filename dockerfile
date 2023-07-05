@@ -20,6 +20,7 @@ FROM alpine:latest AS final
 # 在/alpine中创建/app目录
 WORKDIR /app
 
+
 # 从build阶段复制编译好的二进制文件到当前目录
 COPY --from=build /app/main .
 
