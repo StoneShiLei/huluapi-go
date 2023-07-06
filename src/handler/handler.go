@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 开电脑 "04:7C:16:75:80:20", "255.255.255.255:9"
 func OpenComputerHandler(c *gin.Context) {
 
 	var request model.OpenComputerRequest
@@ -36,6 +37,7 @@ func OpenComputerHandler(c *gin.Context) {
 	})
 }
 
+// 关电脑 "192.168.66.2" "Stone" "84022499"
 func CloseComputerHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong",

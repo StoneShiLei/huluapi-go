@@ -1,26 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wake-on-lan-go
+  name: huluapi
   namespace: default
   labels:
-    app: wake-on-lan-go
+    app: huluapi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wake-on-lan-go
+      app: huluapi
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: wake-on-lan-go
+        app: huluapi
     spec:
       hostNetwork: true
       containers:
-        - name: wake-on-lan-go
+        - name: huluapi
           image: repo.internal.hafuhafu.cn/hulu0811/wake-on-lan-go:{{.image_tag}}
-          # ports:
-          #   - containerPort: 80
-          #     protocol: TCP
+          ports:
+            - containerPort: 7096
+              protocol: TCP
           imagePullPolicy: IfNotPresent
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: huluapi
+  namespace: default
+  labels:
+    app: huluapi
+spec:
+  ports:
+    - protocol: TCP
+      port: 7096
+      targetPort: 7096
+  selector:
+    app: huluapi
+
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: huluapi
+  namespace: default
+spec:
+  entryPoints:
+    - inwebsecure
+    - inweb
+  routes:
+    - kind: Rule
+      match: Host(`huluapi.internal.hafuhafu.cn`)
+      services:
+        - name: huluapi
+          port: 7096
