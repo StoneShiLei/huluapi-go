@@ -5,9 +5,11 @@ import (
 	"encoding/binary"
 	"fmt"
 	"huluapi/src/model"
+	"log"
 	"net"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/ssh"
 )
 
 // 开电脑 "04:7C:16:75:80:20", "255.255.255.255:9"
@@ -39,8 +41,24 @@ func OpenComputerHandler(c *gin.Context) {
 
 // 关电脑 "192.168.66.2" "Stone" "84022499"
 func CloseComputerHandler(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong",
+
+	var request model.CloseComputerRequest
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(400, model.Response{Message: err.Error()})
+		return
+	}
+
+	if request.IpAddr == "" || request.Username == "" || request.Password == "" {
+		c.JSON(400, model.Response{
+			Message: "ipaddr or username or password is required",
+		})
+		return
+	}
+
+	shutdownComputer(request.Username, request.Password, request.IpAddr)
+
+	c.JSON(200, model.Response{
+		Message: "success",
 	})
 }
 
@@ -86,4 +104,35 @@ func createMagicPacket(hwAddr net.HardwareAddr) []byte {
 	}
 
 	return packet.Bytes()
+}
+
+func shutdownComputer(userName string, password string, ipAddr string) {
+	// 设置SSH客户端配置
+	config := &ssh.ClientConfig{
+		User: userName,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(password),
+		},
+		// 必须验证服务器，否则可能会受到中间人攻击。
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	// 连接到SSH服务器
+	client, err := ssh.Dial("tcp", ipAddr+":22", config)
+	if err != nil {
+		log.Fatal("Failed to dial: ", err)
+	}
+	defer client.Close()
+
+	// 创建一个会话
+	session, err := client.NewSession()
+	if err != nil {
+		log.Fatal("Failed to create session: ", err)
+	}
+	defer session.Close()
+
+	// 运行远程命令来关闭计算机
+	if err := session.Run("shutdown /s /t 0"); err != nil {
+		log.Fatal("Failed to run: " + err.Error())
+	}
 }
