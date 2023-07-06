@@ -6,6 +6,7 @@ WORKDIR /app
 
 # 将go mod和src文件复制到工作目录
 COPY go.mod .
+COPY go.sum .
 COPY src ./src
 
 # 下载所有依赖包
@@ -25,7 +26,7 @@ WORKDIR /app
 COPY --from=build /app/main .
 
 # 暴露端口
-# EXPOSE 8080
+EXPOSE 8080
 
 # 运行程序
 CMD ["./main"]
