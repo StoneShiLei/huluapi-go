@@ -11,6 +11,7 @@ func main() {
 
 	r.POST("opencomputer", handler.OpenComputerHandler)
 	r.POST("closecomputer", handler.CloseComputerHandler)
+	r.POST("test", handler.Test)
 
 	r.Run("0.0.0.0:7096")
 }

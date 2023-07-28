@@ -7,10 +7,27 @@ import (
 	"huluapi/src/model"
 	"log"
 	"net"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/ssh"
 )
+
+func Test(c *gin.Context) {
+	var json map[string]interface{}
+
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	testBody := json["testBody"]
+
+	header := c.Request.Header.Get("TestHeader")
+
+	c.JSON(200, model.Response{
+		Message: "响应值：TestHeader[" + header + "];TestBody[" + testBody.(string) + "]",
+	})
+}
 
 // 开电脑 "04:7C:16:75:80:20", "255.255.255.255:9"
 func OpenComputerHandler(c *gin.Context) {
