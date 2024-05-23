@@ -29,6 +29,29 @@ func Test(c *gin.Context) {
 	})
 }
 
+// 简易开启电脑，直接输入mac地址即可
+func SimpleOpenComputerHandler(c *gin.Context) {
+	macAddr := c.Query("mac")
+	bcastAddr := "255.255.255.255:9"
+
+	if macAddr == "" {
+		c.JSON(400, model.Response{
+			Message: "mac  is required",
+		})
+		return
+	}
+
+	err := sendMagicPacket(macAddr, bcastAddr)
+
+	if err != nil {
+		fmt.Println("Failed to send magic packet:", err)
+	}
+
+	c.JSON(200, model.Response{
+		Message: "success",
+	})
+}
+
 // 开电脑 "04:7C:16:75:80:20", "255.255.255.255:9"
 func OpenComputerHandler(c *gin.Context) {
 
